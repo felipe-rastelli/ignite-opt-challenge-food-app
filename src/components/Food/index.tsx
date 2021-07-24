@@ -1,18 +1,29 @@
 import { Component } from 'react';
 import { FiEdit3, FiTrash } from 'react-icons/fi';
 
-import { Container } from './styles';
+import { Food as FoodModel } from '../../types';
 import api from '../../services/api';
 
-class Food extends Component {
-  constructor(props) {
+import { Container } from './styles';
+
+interface FoodProps {
+  food: FoodModel;
+  handleDelete: (id: number) => Promise<void>;
+  handleEditFood: (food: FoodModel) => void;
+};
+interface FoodState {
+  isAvailable: boolean;
+};
+
+class Food extends Component<FoodProps, FoodState> {
+  constructor(props: FoodProps) {
     super(props);
 
     const { available } = this.props.food;
     this.state = {
       isAvailable: available
     };
-  }
+  };
 
   toggleAvailable = async () => {
     const { food } = this.props;
@@ -24,13 +35,13 @@ class Food extends Component {
     });
 
     this.setState({ isAvailable: !isAvailable });
-  }
+  };
 
   setEditingFood = () => {
     const { food, handleEditFood } = this.props;
 
     handleEditFood(food);
-  }
+  };
 
   render() {
     const { isAvailable } = this.state;

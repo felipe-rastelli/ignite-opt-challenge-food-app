@@ -1,34 +1,46 @@
 import { Component } from 'react';
+import { RouteComponentProps } from 'react-router';
 
-import Header from '../../components/Header';
+import { Food as FoodModel } from '../../types';
 import api from '../../services/api';
+import Header from '../../components/Header';
 import Food from '../../components/Food';
 import ModalAddFood from '../../components/ModalAddFood';
 import ModalEditFood from '../../components/ModalEditFood';
+
 import { FoodsContainer } from './styles';
 
-class Dashboard extends Component {
-  constructor(props) {
+type FoodInput = Omit<FoodModel, 'id | available'>;
+interface DashboardProps extends RouteComponentProps {};
+interface DashboardState {
+  foods: FoodModel[];
+  editingFood: FoodModel;
+  modalOpen: boolean;
+  editModalOpen: boolean;
+};
+
+class Dashboard extends Component<DashboardProps, DashboardState> {
+  constructor(props: DashboardProps) {
     super(props);
     this.state = {
       foods: [],
-      editingFood: {},
+      editingFood: {} as FoodModel,
       modalOpen: false,
       editModalOpen: false,
-    }
-  }
+    };
+  };
 
   async componentDidMount() {
-    const response = await api.get('/foods');
+    const response = await api.get<FoodModel[]>('/foods');
 
     this.setState({ foods: response.data });
-  }
+  };
 
-  handleAddFood = async food => {
+  handleAddFood = async (food: FoodInput) => {
     const { foods } = this.state;
 
     try {
-      const response = await api.post('/foods', {
+      const response = await api.post<FoodModel>('/foods', {
         ...food,
         available: true,
       });
@@ -37,13 +49,13 @@ class Dashboard extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
-  handleUpdateFood = async food => {
+  handleUpdateFood = async (food: FoodModel) => {
     const { foods, editingFood } = this.state;
 
     try {
-      const foodUpdated = await api.put(
+      const foodUpdated = await api.put<FoodModel>(
         `/foods/${editingFood.id}`,
         { ...editingFood, ...food },
       );
@@ -56,9 +68,9 @@ class Dashboard extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
-  handleDeleteFood = async id => {
+  handleDeleteFood = async (id: number) => {
     const { foods } = this.state;
 
     await api.delete(`/foods/${id}`);
@@ -66,23 +78,23 @@ class Dashboard extends Component {
     const foodsFiltered = foods.filter(food => food.id !== id);
 
     this.setState({ foods: foodsFiltered });
-  }
+  };
 
   toggleModal = () => {
     const { modalOpen } = this.state;
 
     this.setState({ modalOpen: !modalOpen });
-  }
+  };
 
   toggleEditModal = () => {
     const { editModalOpen } = this.state;
 
     this.setState({ editModalOpen: !editModalOpen });
-  }
+  };
 
-  handleEditFood = food => {
+  handleEditFood = (food: FoodModel) => {
     this.setState({ editingFood: food, editModalOpen: true });
-  }
+  };
 
   render() {
     const { modalOpen, editModalOpen, editingFood, foods } = this.state;
