@@ -35,7 +35,7 @@ class ModalEditFood extends Component<ModalEditFoodProps> {
     const { isOpen, setIsOpen, editingFood } = this.props;
 
     return (
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+      <Modal isOpen={isOpen} onRequestClose={setIsOpen}>
         <Form ref={this.formRef} onSubmit={this.handleSubmit} initialData={editingFood}>
           <h1>Editar Prato</h1>
           <Input name="image" placeholder="Cole o link aqui" />
