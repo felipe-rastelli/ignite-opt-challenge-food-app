@@ -104,7 +104,7 @@ class Dashboard extends Component<DashboardProps, DashboardState> {
         <Header openModal={this.toggleModal} />
         <ModalAddFood
           isOpen={modalOpen}
-          setIsOpen={this.toggleModal}
+          onRequestClose={this.toggleModal}
           handleAddFood={this.handleAddFood}
         />
         <ModalEditFood
